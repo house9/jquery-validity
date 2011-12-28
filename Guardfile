@@ -2,4 +2,5 @@
 
 guard 'rake', :task => :build_js do
   watch(%r{^src/(.+\.js\.coffee)$})
+  watch(%r{^src/(.+\.js)$})  
 end
