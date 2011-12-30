@@ -14,7 +14,10 @@
         //$("#form-1").validity().dump();
         var v = $("#form-1").validity({strategy: 'explicit'}, true);
         v.addValidationOn('title', new window.ValidityLibrary.Validators.Required(), 'title is required');
-        
+        // TODO: handle aynon vaidation methods 
+        // v.addValidationOn('title2', function () { return false; }, 'always false for title2');
+        // this works but seems like a lot of extra work for the calling code
+        // v.addValidationOn('title2', {valid: function () { return false; }}, 'always false for title2');
       });
     </script>  
   </head>
@@ -24,7 +27,9 @@
     </header>
 
     <form id="form-1" class="test-case" method="POST">
-      <input type="text" name="title" />
+      <input type="text" name="title" /><br />
+      <input type="text" name="title2" /><br />
+            
       <input type="submit" value="Form 1" />
     </form>
 

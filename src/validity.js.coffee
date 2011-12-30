@@ -31,6 +31,8 @@ class Validity
   # *****************************************
   
   addValidationOn: (fieldName, validator, message) -> 
+    # TODO: figure it out validator = { valid: -> validator() } if typeof(validator) == "function"
+    
     existing = jQuery.map @fields, (value, index) -> 
       return value if value.fieldName == fieldName
     

@@ -17,7 +17,7 @@ class Submit
 
   callback: (event) ->
     @logger("callback")
-    # event.preventDefault()
+    #event.preventDefault()
     
     @logger(event.target)
     if @validity.validateForm()
