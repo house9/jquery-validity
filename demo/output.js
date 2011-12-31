@@ -198,6 +198,9 @@ if (window.log === undefVariable) {
         "blur": new window.ValidityLibrary.Invokers.Blur(),
         "submit": new window.ValidityLibrary.Invokers.Submit()
       };
+      this.validators = {
+        "required": new window.ValidityLibrary.Validators.Required()
+      };
     }
 
     Registry.prototype.getPresenter = function(presenterToken) {
@@ -216,6 +219,15 @@ if (window.log === undefVariable) {
         throw "Invalid invoker for '" + invokerToken + "', try one of " + (this.show(this.invokers));
       }
       return invoker;
+    };
+
+    Registry.prototype.getValidator = function(validatorToken) {
+      var validator;
+      validator = this.validators[validatorToken];
+      if (validator == null) {
+        throw "Invalid validator for '" + validatorToken + "', try one of " + (this.show(this.validators));
+      }
+      return validator;
     };
 
     Registry.prototype.show = function(object) {
@@ -313,6 +325,7 @@ if (window.log === undefVariable) {
       this.invoker = invoker;
       this.errors = [];
       this.fields = [];
+      this.registry = new window.ValidityLibrary.Registry();
       this.invoker.initialize(this);
     }
 
@@ -343,7 +356,17 @@ if (window.log === undefVariable) {
     };
 
     Validity.prototype.addValidationOn = function(fieldName, validator, message) {
-      var existing, set;
+      var existing, realValidator, set;
+      if (typeof validator === "function") {
+        this.logger("validator is a function");
+        realValidator = this.createValidator(validator);
+      } else if (typeof validator === "string") {
+        this.logger("validator is a string");
+        realValidator = this.registry.getValidator(validator);
+      } else {
+        this.logger("validator is a validator object");
+        realValidator = validator;
+      }
       existing = jQuery.map(this.fields, function(value, index) {
         if (value.fieldName === fieldName) return value;
       });
@@ -352,7 +375,7 @@ if (window.log === undefVariable) {
           fieldName: fieldName,
           validators: [
             {
-              validator: validator,
+              validator: realValidator,
               message: message
             }
           ]
@@ -360,7 +383,7 @@ if (window.log === undefVariable) {
         return this.fields.push(set);
       } else {
         return existing[0].validators.push({
-          validator: validator,
+          validator: realValidator,
           message: message
         });
       }
@@ -449,6 +472,10 @@ if (window.log === undefVariable) {
         _results.push(this.logger(field));
       }
       return _results;
+    };
+
+    Validity.prototype.createValidator = function(anonymousFunction) {
+      return { valid: anonymousFunction };
     };
 
     return Validity;

@@ -1,3 +1,5 @@
+window.ValidityLibrary.isDebugEnabled = true;
+    
 // beforeEach(function() {
 //   this.addMatchers({
 //     toBePlaying: function(expectedSong) {

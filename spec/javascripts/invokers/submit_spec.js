@@ -1,7 +1,6 @@
 describe("Invokers::Sumbit", function() {
   
-  beforeEach(function() {
-    window.ValidityLibrary.isDebugEnabled = true;    
+  beforeEach(function() {    
     invoker = new window.ValidityLibrary.Invokers.Submit();
   });
     

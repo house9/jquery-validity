@@ -12,6 +12,10 @@ class Registry
       "blur": new window.ValidityLibrary.Invokers.Blur(),
       "submit": new window.ValidityLibrary.Invokers.Submit()
     }
+    
+    @validators = {
+      "required": new window.ValidityLibrary.Validators.Required()
+    }
   
   getPresenter: (presenterToken) ->
     presenter = @presenters[presenterToken]
@@ -23,7 +27,10 @@ class Registry
     throw "Invalid invoker for '#{invokerToken}', try one of #{@show(@invokers)}" unless invoker?
     return invoker
     
-  # TODO: getValidator - switch that takes 'key' and returns object
+  getValidator: (validatorToken) ->
+    validator = @validators[validatorToken]
+    throw "Invalid validator for '#{validatorToken}', try one of #{@show(@validators)}" unless validator?
+    return validator
     
   show: (object) ->
     display = for key, value of object 

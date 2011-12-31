@@ -41,4 +41,17 @@ describe("Registry", function() {
     
   });  
 
+  describe("validator", function() {
+
+    it("should return required", function() {
+      expect(registry.getValidator("required")).toBeDefined();
+    });
+    
+    it("should throw error when not found", function() {
+      expect(function () { registry.getValidator("invalid-x") }).toThrow();
+    });
+    
+  });
+
+
 });

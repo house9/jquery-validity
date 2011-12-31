@@ -152,10 +152,15 @@ describe("Validity", function() {
       expect(validator.fields.length).toEqual(1);      
     });
     
-    // it("should add an anonymous function as a validator", function () {
-    //   // TODO: implement
-    // });
+    it("should add an anonymous function as a validator", function () {
+      validator.addValidationOn("field1", function (element) { return false; }, "message1");
+      expect(validator.fields.length).toEqual(1);
+    });
 
+    it("should add an validation using a string key", function () {
+      validator.addValidationOn("field1", "required", "message1");
+      expect(validator.fields.length).toEqual(1);
+    });
   });
   
   describe("removeValidationFrom", function() {
@@ -206,6 +211,13 @@ describe("Validity", function() {
       validator.addValidationOn('title', new window.ValidityLibrary.Validators.Required(), 'title is required');
       expect(validator.validateForm()).toEqual(false);
     });
+    
+    it("should execute anonymous function", function() {      
+      validator.addValidationOn('title', function (element) { return false; }, 'title is required');
+      jQuery('#title-field').val('some-value');
+      expect(validator.validateForm()).toEqual(false);
+    });
+
   });
   
 });

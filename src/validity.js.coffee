@@ -5,7 +5,7 @@ class Validity
   constructor: (@form, @presenter, @invoker) ->
     @errors = []
     @fields = []
-    # @presenter.initialize(this)
+    @registry = new window.ValidityLibrary.Registry()
     @invoker.initialize(this)
     
   logger: (message) ->
@@ -42,16 +42,26 @@ class Validity
   # *****************************************
   
   addValidationOn: (fieldName, validator, message) -> 
+    if typeof(validator) == "function"
+      @logger("validator is a function")
+      realValidator = @createValidator(validator)
+    else if typeof(validator) == "string"
+      @logger("validator is a string")
+      realValidator = @registry.getValidator(validator)
+    else
+      @logger("validator is a validator object")
+      realValidator = validator
+      
     # TODO: figure it out validator = { valid: -> validator() } if typeof(validator) == "function"
     
     existing = jQuery.map @fields, (value, index) -> 
       return value if value.fieldName == fieldName
     
     if existing.length == 0  
-      set = {fieldName: fieldName, validators: [{validator: validator, message: message}]}
+      set = {fieldName: fieldName, validators: [{validator: realValidator, message: message}]}
       @fields.push(set)
     else
-      existing[0].validators.push({validator: validator, message: message})
+      existing[0].validators.push({validator: realValidator, message: message})
     
   removeValidationFrom: (fieldName, validator = null) ->
     if validator == null
@@ -107,6 +117,9 @@ class Validity
   report: ->
     for field in @fields 
       @logger(field)
+  
+  createValidator: (anonymousFunction) ->
+    return `{ valid: anonymousFunction }`
 
 window.ValidityLibrary.Validity = Validity
   
