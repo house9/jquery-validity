@@ -1,5 +1,9 @@
 describe("Validity", function() {
+  // item under test
   var validator = null;
+  var form = null;
+  
+  // stubs
   var presenter = {
     hide: function () { },
     show: function () { }
@@ -8,7 +12,6 @@ describe("Validity", function() {
     initialize: function (validity) { this.validity = validity; },
     watch: function () { }
   };
-  var form = null;
 
   beforeEach(function() {
     validator = new window.ValidityLibrary.Validity(form, presenter, invoker);
@@ -33,7 +36,24 @@ describe("Validity", function() {
       validator.initialize();      
       expect(invoker.watch).toHaveBeenCalled();
     });
+    
+    it("should wire up validators when implicit", function() {     
+      loadFixtures('validity_initialize.html');
+      form = jQuery("#test-fixture");
+      validator = new window.ValidityLibrary.Validity(form, presenter, invoker);
+      validator.initialize('implicit');
+      expect(validator.fields.length).toEqual(2);
+    });
   
+    it("should wire up validators when implicit with the correct message", function() {     
+      loadFixtures('validity_initialize.html');
+      form = jQuery("#test-fixture");
+      validator = new window.ValidityLibrary.Validity(form, presenter, invoker);
+      validator.initialize('implicit');
+      expect(validator.fields.length).toEqual(2);
+      expect(validator.fields[0].validators[0].message).toEqual("Field is required");
+      expect(validator.fields[1].validators[0].message).toEqual("Test Name 3 is required");      
+    });  
   });
   
   describe("hideErrors", function() {
@@ -130,7 +150,11 @@ describe("Validity", function() {
       validator.addValidationOn("field1", {}, "message1");
       validator.addValidationOn("field1", {}, "message2");      
       expect(validator.fields.length).toEqual(1);      
-    });    
+    });
+    
+    // it("should add an anonymous function as a validator", function () {
+    //   // TODO: implement
+    // });
 
   });
   
@@ -163,6 +187,25 @@ describe("Validity", function() {
       expect(validator.fields.length).toEqual(0);
     });
     
+  });
+  
+  describe("validateForm", function() {
+    beforeEach(function() {
+      loadFixtures('validity_validate_form.html');
+      form = jQuery("#test-fixture");
+      validator = new window.ValidityLibrary.Validity(form, presenter, invoker);
+    });
+      
+    it("should return valid", function() {      
+      validator.addValidationOn('title', new window.ValidityLibrary.Validators.Required(), 'title is required');
+      jQuery('#title-field').val('some-value');
+      expect(validator.validateForm()).toEqual(true);
+    });
+
+    it("should return invalid", function() {      
+      validator.addValidationOn('title', new window.ValidityLibrary.Validators.Required(), 'title is required');
+      expect(validator.validateForm()).toEqual(false);
+    });
   });
   
 });

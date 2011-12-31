@@ -327,7 +327,18 @@ if (window.log === undefVariable) {
     };
 
     Validity.prototype.initialize = function(strategy) {
+      var _this = this;
       this.logger(strategy);
+      if (strategy === 'implicit') {
+        this.form.find(":input").each(function(index, element) {
+          var $element, message;
+          $element = jQuery(element);
+          if ($element.hasClass('validity-required')) {
+            message = $element.data("validationRequiredMessage") ? $element.data("validationRequiredMessage") : "Field is required";
+            return _this.addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Required(), message);
+          }
+        });
+      }
       return this.invoker.watch(this.form);
     };
 
@@ -395,7 +406,6 @@ if (window.log === undefVariable) {
         for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
           set = _ref2[_j];
           this.logger(set);
-          this.logger(typeof set.validator === "function");
           if (!set.validator.valid(this.form.find("input[name='" + field.fieldName + "']"))) {
             this.addError(field.fieldName, set.message);
             valid = false;
@@ -472,6 +482,10 @@ if (window.log === undefVariable) {
       }      
     }
   } 
+
+  // TODO: add 
+  // - callbacks for validateForm, success and fail
+  // - add validateField method
 
   // ***************************************
   // ***************************************

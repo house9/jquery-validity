@@ -17,6 +17,17 @@ class Validity
   
   initialize: (strategy) ->
     @logger(strategy)
+    if strategy == 'implicit'
+      @form.find(":input").each (index, element) =>
+        $element = jQuery(element)
+        if $element.hasClass('validity-required')
+          message = if $element.data("validationRequiredMessage") then $element.data("validationRequiredMessage") else "Field is required"
+          @addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Required(), message)
+          
+        # TODO: else every other kind :(
+
+    @invoker.watch(@form)    
+
     # strategy -> implicit
     #   go through each control in the form looking for validation css
     #   for each one check for a data-validation-message attribute or use default
@@ -24,7 +35,7 @@ class Validity
     #   possible that regex validators will have data-validation-regex
     # strategy -> explicit
     #   expect client code to call addValidationOn as needed, can also call it after implicit
-    @invoker.watch(@form)
+
   
   # *****************************************
   # public methods
@@ -66,23 +77,13 @@ class Validity
       for set in field.validators
         @logger(set)
         # TODO: handle anonymous method in place of valid()
-        @logger(typeof(set.validator) == "function")
+        # @logger(typeof(set.validator) == "function")
         unless set.validator.valid(@form.find("input[name='#{field.fieldName}']"))
-          @addError(field.fieldName, set.message) # TODO: only one error at a time per field?
+          # TODO: only one error at a time per field?        
+          @addError(field.fieldName, set.message) 
           valid = false
 
     return valid
-    # @logger("validateForm - stub: return true")
-    # return true
-    # @logger("validateForm - stub: return false")
-    # return false
-    # loop through each @fields
-    # check first validation from @fields validators arrays 
-    #   if valid, then check next on @field
-    #   if invalid update errors
-    # log "TODO: validateForm"
-    
-  
     
   hideErrors: () -> 
     @presenter.hide()

@@ -21,6 +21,10 @@
     }
   } 
 
+  // TODO: add 
+  // - callbacks for validateForm, success and fail
+  // - add validateField method
+
   // ***************************************
   // ***************************************
   // Begin plugin
