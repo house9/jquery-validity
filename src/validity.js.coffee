@@ -25,17 +25,9 @@ class Validity
           @addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Required(), message)
           
         # TODO: else every other kind :(
+        # possible that regex validators will have data-validation-regex        
 
-    @invoker.watch(@form)    
-
-    # strategy -> implicit
-    #   go through each control in the form looking for validation css
-    #   for each one check for a data-validation-message attribute or use default
-    #   call addValidationOn(field, new Validators.Required(), message)
-    #   possible that regex validators will have data-validation-regex
-    # strategy -> explicit
-    #   expect client code to call addValidationOn as needed, can also call it after implicit
-
+    @invoker.watch(@form)
   
   # *****************************************
   # public methods

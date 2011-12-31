@@ -3,7 +3,7 @@ window.ValidityLibrary.Validators ?= {}
 
 class Required
   constructor: ->
-    console.log "Required"
+    @logger("Required")
     
   valid: (field) ->
     @logger("valid")

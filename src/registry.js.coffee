@@ -14,7 +14,8 @@ class Registry
     }
     
     @validators = {
-      "required": new window.ValidityLibrary.Validators.Required()
+      "required": new window.ValidityLibrary.Validators.Required(),
+      "email": new window.ValidityLibrary.Validators.Email()
     }
   
   getPresenter: (presenterToken) ->

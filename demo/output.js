@@ -199,7 +199,8 @@ if (window.log === undefVariable) {
         "submit": new window.ValidityLibrary.Invokers.Submit()
       };
       this.validators = {
-        "required": new window.ValidityLibrary.Validators.Required()
+        "required": new window.ValidityLibrary.Validators.Required(),
+        "email": new window.ValidityLibrary.Validators.Email()
       };
     }
 
@@ -254,8 +255,41 @@ if (window.log === undefVariable) {
 
 // compiled ./src/validators/email.js.coffee 
 (function() {
+  var Email, _base;
 
+  if (window.ValidityLibrary == null) window.ValidityLibrary = {};
 
+  if ((_base = window.ValidityLibrary).Validators == null) _base.Validators = {};
+
+  Email = (function() {
+
+    function Email() {
+      this.logger("Email");
+    }
+
+    Email.prototype.valid = function(field) {
+      var value;
+      this.logger("valid");
+      this.logger(field);
+      value = field.val();
+      return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
+    };
+
+    Email.prototype.logger = function(message) {
+      if (window.ValidityLibrary.isDebugEnabled) {
+        if (typeof message === "string") {
+          return log(" - Validators::Email: " + message);
+        } else {
+          return log(message);
+        }
+      }
+    };
+
+    return Email;
+
+  })();
+
+  window.ValidityLibrary.Validators.Email = Email;
 
 }).call(this);
 
@@ -277,7 +311,7 @@ if (window.log === undefVariable) {
   Required = (function() {
 
     function Required() {
-      console.log("Required");
+      this.logger("Required");
     }
 
     Required.prototype.valid = function(field) {
