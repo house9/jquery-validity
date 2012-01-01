@@ -1,5 +1,10 @@
 window.ValidityLibrary ?= {}
 
+window.ValidityLibrary.messages = {
+  required: "Field is required",
+  email: "Email must be a valid format"
+}
+
 # *****************************************
 class Validity
   constructor: (@form, @presenter, @invoker) ->
@@ -20,10 +25,15 @@ class Validity
     if strategy == 'implicit'
       @form.find(":input").each (index, element) =>
         $element = jQuery(element)
+        # TODO: parse css class and then use Registry to get validation object
         if $element.hasClass('validity-required')
-          message = if $element.data("validationRequiredMessage") then $element.data("validationRequiredMessage") else "Field is required"
+          # TODO: support validationMessageKey to support user added entries
+          message = if $element.data("validationRequiredMessage") then $element.data("validationRequiredMessage") else window.ValidityLibrary.messages.required
           @addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Required(), message)
-          
+        
+        if $element.hasClass('validity-email')
+          message = if $element.data("validationRequiredMessage") then $element.data("validationRequiredMessage") else window.ValidityLibrary.messages.email
+          @addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Email(), message)        
         # TODO: else every other kind :(
         # possible that regex validators will have data-validation-regex        
 
@@ -43,8 +53,6 @@ class Validity
     else
       @logger("validator is a validator object")
       realValidator = validator
-      
-    # TODO: figure it out validator = { valid: -> validator() } if typeof(validator) == "function"
     
     existing = jQuery.map @fields, (value, index) -> 
       return value if value.fieldName == fieldName
@@ -78,8 +86,6 @@ class Validity
       @logger(field)
       for set in field.validators
         @logger(set)
-        # TODO: handle anonymous method in place of valid()
-        # @logger(typeof(set.validator) == "function")
         unless set.validator.valid(@form.find("input[name='#{field.fieldName}']"))
           # TODO: only one error at a time per field?        
           @addError(field.fieldName, set.message) 
@@ -114,23 +120,4 @@ class Validity
     return `{ valid: anonymousFunction }`
 
 window.ValidityLibrary.Validity = Validity
-  
-#   
-#   
-# 
-# # TODO: re-think messages
-# # they should be part of validator? or messaging object (notifications) ???
-# # think of multi-language and then custom messages
-# 
-# 
-# # # Usage
-# # v = new SmoothValidator()
-# # v.addValidationOn("email", "required", "Email is required")
-# # v.addValidationOn("email", "email", "Invalid email format")
-# # uniqueEmailFunction = (element) -> log "TODO"
-# # 
-# # v.addValidationOn("email", uniqueEmailFunction, "Email must be unique")
-# # 
-# # console.log "x" 
-# 
-#  
+ 

@@ -263,26 +263,12 @@ if (window.log === undefVariable) {
 
   Email = (function() {
 
-    function Email() {
-      this.logger("Email");
-    }
+    function Email() {}
 
     Email.prototype.valid = function(field) {
       var value;
-      this.logger("valid");
-      this.logger(field);
       value = field.val();
       return /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i.test(value);
-    };
-
-    Email.prototype.logger = function(message) {
-      if (window.ValidityLibrary.isDebugEnabled) {
-        if (typeof message === "string") {
-          return log(" - Validators::Email: " + message);
-        } else {
-          return log(message);
-        }
-      }
     };
 
     return Email;
@@ -310,24 +296,10 @@ if (window.log === undefVariable) {
 
   Required = (function() {
 
-    function Required() {
-      this.logger("Required");
-    }
+    function Required() {}
 
     Required.prototype.valid = function(field) {
-      this.logger("valid");
-      this.logger(field);
       return field.val() !== "";
-    };
-
-    Required.prototype.logger = function(message) {
-      if (window.ValidityLibrary.isDebugEnabled) {
-        if (typeof message === "string") {
-          return log(" - Validators::Required: " + message);
-        } else {
-          return log(message);
-        }
-      }
     };
 
     return Required;
@@ -350,6 +322,11 @@ if (window.log === undefVariable) {
   var Validity;
 
   if (window.ValidityLibrary == null) window.ValidityLibrary = {};
+
+  window.ValidityLibrary.messages = {
+    required: "Field is required",
+    email: "Email must be a valid format"
+  };
 
   Validity = (function() {
 
@@ -381,8 +358,12 @@ if (window.log === undefVariable) {
           var $element, message;
           $element = jQuery(element);
           if ($element.hasClass('validity-required')) {
-            message = $element.data("validationRequiredMessage") ? $element.data("validationRequiredMessage") : "Field is required";
-            return _this.addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Required(), message);
+            message = $element.data("validationRequiredMessage") ? $element.data("validationRequiredMessage") : window.ValidityLibrary.messages.required;
+            _this.addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Required(), message);
+          }
+          if ($element.hasClass('validity-email')) {
+            message = $element.data("validationRequiredMessage") ? $element.data("validationRequiredMessage") : window.ValidityLibrary.messages.email;
+            return _this.addValidationOn($element.attr('name'), new window.ValidityLibrary.Validators.Email(), message);
           }
         });
       }

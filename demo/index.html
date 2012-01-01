@@ -13,6 +13,7 @@
         // log("-------------------------------------------");
         //$("#form-1").validity().dump();
         var v = $("#form-1").validity({strategy: 'explicit'}, true);
+        // var v = $("#form-1").validity({strategy: 'implicit'}, true);
         v.addValidationOn('title', 'required', 'title is required');
         v.addValidationOn('email', 'required', 'email is required');
         v.addValidationOn('email', 'email', 'email must have a valid format');        
@@ -27,7 +28,7 @@
     <form id="form-1" class="test-case" method="POST">
       <input type="text" name="title" /><br />
       <input type="text" name="title2" /><br />
-      <input type="text" name="email" /><br />
+      <input type="text" name="email" class="validity-required validity-email" /><br />
                   
       <input type="submit" value="Form 1" />
     </form>
